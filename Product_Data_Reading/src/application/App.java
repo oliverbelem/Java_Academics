@@ -10,7 +10,6 @@ public class App {
 
 	public static void main(String[] args) {
 		
-		Product product = new Product();
 		App app = new App();
 		List<Product> stockList = new ArrayList<>();
 		Scanner scanner = new Scanner(System.in);
@@ -18,13 +17,17 @@ public class App {
 		App.Clear_Terminal();
 		
 		App.Visual_Title();
-		app.Stock_Menu(stockList, product, scanner);
-		app.Stock_Visual_Table(stockList, product);
-
 		
-
+		String response = app.Stock_Menu(stockList, scanner);
 		
-	
+		while (!response.equals("Exit")) {
+			response = app.Stock_Visual_Table(stockList, scanner);
+		}
+		
+		App.Visual_Title();
+		System.out.println("\nThe application was finished...\n");
+		System.exit(0);
+
 		scanner.close();
 	}
 	
@@ -33,23 +36,36 @@ public class App {
 	    System.out.flush();
 	}
 	
-	private void Stock_Menu(List<Product> stockList, Product product, Scanner scanner) {
-		int selector = 0;
-		System.out.println("Options: ");
-		System.out.println("1 - Add a new product");
-		System.out.println("-----------------------------------------------------");
-		selector = scanner.nextInt();
-		
+	private String Selector_Menu(int selector, List<Product> stockList, Scanner scanner) {
 		switch (selector) {
 		case 1:
 			App.Clear_Terminal();
-			Add_On_Stock(product, scanner, stockList);
+			Add_On_Stock(scanner, stockList);
+			break;
+		case 2:
+			App.Clear_Terminal();
+			return "Exit";
 		default:
 			break;
 		}
+		return "";
 	}
 	
-	private void Add_On_Stock(Product product, Scanner scanner, List<Product> stockList) {
+	private String Stock_Menu(List<Product> stockList, Scanner scanner) {
+		int selector = 0;
+		System.out.println("Options: ");
+		System.out.println("1 - Add a new product");
+		System.out.println("2 - Exit");
+		System.out.println("-----------------------------------------------------");
+		selector = scanner.nextInt();
+		
+		String response = Selector_Menu(selector, stockList, scanner);
+		return response;
+	}
+	
+	private void Add_On_Stock(Scanner scanner, List<Product> stockList) {
+		Product product = new Product();
+
 		App.Visual_Title();
 		scanner.nextLine();
 
@@ -67,7 +83,7 @@ public class App {
 		System.out.println(product);
 	}
 	
-	private void Stock_Visual_Table(List<Product> stockList, Product product) {
+	private String Stock_Visual_Table(List<Product> stockList,Scanner scanner) {
 		App.Clear_Terminal();
 		App.Visual_Title();
 		System.out.printf("%-25s%-15s%-10s\n", "Product Name", "Price", "Quantity");
@@ -79,8 +95,11 @@ public class App {
 					productsProduct.Name, 
 					productsProduct.Price,
 					productsProduct.Quantity);
-			System.out.println("-----------------------------------------------------");
 		}
+		System.out.println("-----------------------------------------------------");
+		
+		String response = Stock_Menu(stockList, scanner);
+		return response;
 	}
 	
 	
