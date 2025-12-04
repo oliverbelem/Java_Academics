@@ -1,0 +1,111 @@
+package application;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import entities.Product;
+
+public class App {
+
+	public static void main(String[] args) {
+		
+		App app = new App();
+		List<Product> stockList = new ArrayList<>();
+		Scanner scanner = new Scanner(System.in);
+		
+		App.Clear_Terminal();
+		
+		App.Visual_Title();
+		
+		String response = app.Stock_Menu(stockList, scanner);
+		
+		while (!response.equals("Exit")) {
+			response = app.Stock_Visual_Table(stockList, scanner);
+		}
+		
+		App.Visual_Title();
+		System.out.println("\nThe application was finished...\n");
+		System.exit(0);
+
+		scanner.close();
+	}
+	
+	private static void Clear_Terminal() {
+		System.out.print("\033[H\033[2J");
+	    System.out.flush();
+	}
+	
+	private String Selector_Menu(int selector, List<Product> stockList, Product product, Scanner scanner) {
+		switch (selector) {
+		case 1:
+			App.Clear_Terminal();
+			Add_On_Stock(scanner, stockList);
+			break;
+		case 2:
+			App.Clear_Terminal();
+			return "Exit";
+		default:
+			break;
+		}
+		return "";
+	}
+	
+	private String Stock_Menu(List<Product> stockList, Scanner scanner) {
+		int selector = 0;
+		System.out.println("Options: ");
+		System.out.println("1 - Add a new product");
+		System.out.println("2 - Exit");
+		System.out.println("-----------------------------------------------------");
+		selector = scanner.nextInt();
+		
+		String response = Selector_Menu(selector, stockList, scanner);
+		return response;
+	}
+	
+	private void Add_On_Stock(Scanner scanner, List<Product> stockList) {
+		Product product = new Product();
+
+		App.Visual_Title();
+		scanner.nextLine();
+
+		System.out.println("Enter the product data:");
+		System.out.print("Name: ");
+		product.Name = scanner.nextLine();
+		System.out.print("Price: ");
+		product.Price = scanner.nextDouble();
+		System.out.print("Quantity: ");
+		product.Quantity = scanner.nextInt();
+		
+		stockList.add(product);
+		
+		System.out.print("\nItem Added: ");
+		System.out.println(product);
+	}
+	
+	private String Stock_Visual_Table(List<Product> stockList,Scanner scanner) {
+		App.Clear_Terminal();
+		App.Visual_Title();
+		System.out.printf("%-25s%-15s%-10s\n", "Product Name", "Price", "Quantity");
+		System.out.println("-----------------------------------------------------");
+		
+		for (Product productsProduct : stockList) {
+			System.out.printf(
+					"%-25s%-15s%-10s\n",
+					productsProduct.Name, 
+					productsProduct.Price,
+					productsProduct.Quantity);
+		}
+		System.out.println("-----------------------------------------------------");
+		
+		String response = Stock_Menu(stockList, scanner);
+		return response;
+	}
+	
+	
+	public static void Visual_Title() {
+		System.out.println("-----------------------------------------------------");
+		System.out.println("                     STOCK ADDER                     ");
+		System.out.println("-----------------------------------------------------");
+	}
+}
